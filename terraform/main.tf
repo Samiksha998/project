@@ -14,13 +14,14 @@ resource "aws_instance" "k8s_instance" {
     Name = "k8s-instance"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'Waiting for kubeconfig.yaml to be ready...'",
-      "retry=0; while [ ! -f /home/ec2-user/kubeconfig.yaml ]; do sleep 10; retry=$((retry+1)); if [ $retry -ge 12 ]; then echo 'Timeout waiting for kubeconfig'; exit 1; fi; done",
-      "ls -l /home/ec2-user/kubeconfig.yaml"
-    ]
-
+provisioner "remote-exec" {
+  inline = [
+    "set -euo pipefail",
+    "set -x",
+    "echo 'Checking for kubeconfig.yaml on the EC2 instance...'",
+    "retry=0; while [ ! -f /home/ec2-user/kubeconfig.yaml ]; do sleep 10; retry=$((retry+1)); echo \"Retry #$retry\"; if [ $retry -ge 12 ]; then echo 'Timeout waiting for kubeconfig'; exit 1; fi; done",
+    "ls -l /home/ec2-user/kubeconfig.yaml"
+  ]
 
     connection {
       type        = "ssh"
