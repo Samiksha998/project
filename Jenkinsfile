@@ -21,8 +21,8 @@ pipeline {
                     # Assumes `docker login` already done manually on the Jenkins host
 
                     cd docker/frontend
-                    echo 'samiksha' | sudo -S docker build -t $FRONTEND_IMAGE .
-                    echo 'samiksha' | sudo -S docker push $FRONTEND_IMAGE
+                    echo 'admin' | sudo -S docker build -t $FRONTEND_IMAGE .
+                    echo 'admin' | sudo -S docker push $FRONTEND_IMAGE
                     cd ../..
 
                     cd docker/backend
