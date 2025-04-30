@@ -6,7 +6,7 @@ pipeline {
         DOCKER_PASSWORD = credentials('Samiksha@1998')
         KUBECONFIG = "/home/ec2-user/.kube/config"
         FRONTEND_IMAGE = "samikshav/full-stack-app-frontend:latest"
-        BACKEND_IMAGE = "samikshav/full-stack-app-backend"
+        BACKEND_IMAGE = "samikshav/full-stack-app-backend:latest"
     }
 
     stages {
