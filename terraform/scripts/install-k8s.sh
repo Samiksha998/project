@@ -6,7 +6,7 @@ curl -sfL https://get.k3s.io | sh -
 # Wait for K3s service to start
 sleep 15
 
-# Copy kubeconfig to ec2-user's home directory
+# Copy kubeconfig to ec2-user's home and fix permissions
 sudo cp /etc/rancher/k3s/k3s.yaml /home/ec2-user/kubeconfig.yaml
 sudo chown ec2-user:ec2-user /home/ec2-user/kubeconfig.yaml
 sudo chmod 600 /home/ec2-user/kubeconfig.yaml
