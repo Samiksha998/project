@@ -22,12 +22,12 @@ pipeline {
 
                     cd docker/frontend
                     docker build -t $FRONTEND_IMAGE .
-                    sudo docker push $FRONTEND_IMAGE
+                    echo 'samiksha' | sudo -S docker push $FRONTEND_IMAGE
                     cd ../..
 
                     cd docker/backend
                     docker build -t $BACKEND_IMAGE .
-                    sudo docker push $BACKEND_IMAGE
+                    echo 'samiksha' | sudo -S docker push $BACKEND_IMAGE
                     cd ../..
                     '''
                 }
