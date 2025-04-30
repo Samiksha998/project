@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = credentials('samikshav')            // Jenkins secret text or username-password ID
-        DOCKER_PASSWORD = credentials('Samiksha@1998')        // Jenkins secret text or username-password ID
-        KUBECONFIG = "/home/ec2-user/.kube/config"            // Path to Kubeconfig for kubectl
+        KUBECONFIG = "/home/ec2-user/.kube/config"
         FRONTEND_IMAGE = "samikshav/full-stack-app-frontend:latest"
         BACKEND_IMAGE  = "samikshav/full-stack-app-backend:latest"
     }
@@ -20,7 +18,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                    # Assumes `docker login` already done manually on the Jenkins host
 
                     cd docker/frontend
                     docker build -t $FRONTEND_IMAGE .
