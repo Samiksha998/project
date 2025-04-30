@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = credentials('docker-username')  // Credential ID: secret text or username
-        DOCKER_PASSWORD = credentials('docker-password')  // Credential ID: secret text
+        DOCKER_USERNAME = credentials('samikshav')  // Credential ID: secret text or username
+        DOCKER_PASSWORD = credentials('Samiksha@1998')  // Credential ID: secret text
         EC2_PUBLIC_IP   = '3.235.135.218'                 // Use IP directly unless you store it in credentials
     }
 
