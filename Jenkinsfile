@@ -2,48 +2,69 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = credentials('samikshav')  // Credential ID: secret text or username
-        DOCKER_PASSWORD = credentials('Samiksha@1998')  // Credential ID: secret text
-        EC2_PUBLIC_IP   = '3.235.135.218'                 // Use IP directly unless you store it in credentials
+        DOCKER_USERNAME = credentials('dockerhub-username') // Jenkins credentials ID
+        DOCKER_PASSWORD = credentials('dockerhub-password')
+        KUBECONFIG = "/home/ec2-user/.kube/config"
+        FRONTEND_IMAGE = "yourdockerhubusername/frontend-app:latest"
+        BACKEND_IMAGE = "yourdockerhubusername/backend-app:latest"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Samiksha998/project.git'
+                git url: 'https://github.com/YOUR_GITHUB_REPO_URL.git', branch: 'main'
             }
         }
 
-        stage('Docker Build & Push Frontend') {
+        stage('Build Docker Images') {
             steps {
-                sh """
-                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                docker build -t $DOCKER_USERNAME/full-stack-app-frontend:latest ./docker/frontend
-                docker push $DOCKER_USERNAME/full-stack-app-frontend:latest
-                """
+                script {
+                    sh '''
+                    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+                    cd frontend
+                    docker build -t $FRONTEND_IMAGE .
+                    docker push $FRONTEND_IMAGE
+                    cd ..
+
+                    cd backend
+                    docker build -t $BACKEND_IMAGE .
+                    docker push $BACKEND_IMAGE
+                    cd ..
+                    '''
+                }
             }
         }
 
-        stage('Docker Build & Push Backend') {
+        stage('Terraform Apply') {
             steps {
-                sh """
-                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                docker build -t $DOCKER_USERNAME/full-stack-app-backend:latest ./docker/backend
-                docker push $DOCKER_USERNAME/full-stack-app-backend:latest
-                """
+                script {
+                    sh '''
+                    cd terraform
+                    terraform init
+                    terraform apply -auto-approve
+                    '''
+                }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                sshagent (credentials: ['ec2-ssh-key']) { // Replace with your actual SSH key credential ID
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP '
-                        kubectl apply -f /home/ec2-user/project/k8s-manifests/
-                    '
-                    """
+                script {
+                    sh '''
+                    kubectl apply -f k8s/frontend-deployment.yaml
+                    kubectl apply -f k8s/frontend-service.yaml
+                    kubectl apply -f k8s/backend-deployment.yaml
+                    kubectl apply -f k8s/backend-service.yaml
+                    '''
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline completed."
         }
     }
 }
