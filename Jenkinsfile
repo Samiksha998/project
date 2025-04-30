@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_USERNAME = credentials('samikshav') // Jenkins credentials ID
-        DOCKER_PASSWORD = credentials('Samikha@1998')
+        DOCKER_PASSWORD = credentials('Samiksha@1998')
         KUBECONFIG = "/home/ec2-user/.kube/config"
         FRONTEND_IMAGE = "samikshav/full-stack-app-frontend:latest"
         BACKEND_IMAGE = "samikshav/full-stack-app-backend"
