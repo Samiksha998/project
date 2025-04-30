@@ -7,11 +7,11 @@ sudo yum install -y curl wget unzip bash-completion conntrack
 
 # Install Docker
 sudo yum install -y docker
-sudo systemctl enable docker
 sudo systemctl start docker
+sudo systemctl enable docker
 
 # Add current user to docker group
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $USER && newgrp docker
 
 # Download and install kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
