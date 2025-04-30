@@ -8,7 +8,8 @@ resource "aws_instance" "k8s_instance" {
   key_name      = "key"
 
   # Use this to ensure K3s is installed and kubeconfig is generated
-  user_data = file("scripts/install-k8s.sh")
+
+  user_data = file("scripts/install-k3s.sh")
 
   tags = {
     Name = "k8s-instance"
