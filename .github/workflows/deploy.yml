@@ -60,9 +60,11 @@ jobs:
           export KUBECONFIG=$KUBECONFIG_FILE
 
       - name: Deploy to Kubernetes on EC2 (K3s)
-        run: |
-          sudo dnf install git -y 
-          git clone https://github.com/Samiksha998/project.git
-          cd project
-          sudo k3s kubectl get nodes
-          sudo k3s kubectl apply -f ./k8s-manifests
+      run: |
+        echo "${{ secrets.KUBECONFIG_CONTENT }}" | base64 -d > $KUBECONFIG_FILE
+        export KUBECONFIG=$KUBECONFIG_FILE
+
+        git clone https://github.com/Samiksha998/project.git
+        cd project
+        kubectl get nodes
+        kubectl apply -f ./k8s-manifests
