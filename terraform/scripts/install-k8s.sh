@@ -1,35 +1,33 @@
 #!/bin/bash
 
-# Script to install K3s (lightweight Kubernetes) on Amazon Linux EC2
-
-echo "🔄 Updating system..."
-sudo yum update -y
-
-echo "🔧 Installing dependencies..."
-sudo yum install -y curl wget bash-completion
-
-echo "🐳 Installing Docker..."
-sudo yum install -y docker
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo usermod -aG docker $USER
-
-echo "🚀 Installing K3s..."
+# Install K3s
 curl -sfL https://get.k3s.io | sh -
 
-echo "✅ K3s Installed. Fetching status..."
+# Wait for K3s service to start
+sleep 15
+
+# Copy kubeconfig to ec2-user's home directory
+sudo cp /etc/rancher/k3s/k3s.yaml /home/ec2-user/kubeconfig.yaml
+sudo chown ec2-user:ec2-user /home/ec2-user/kubeconfig.yaml
+sudo chmod 600 /home/ec2-user/kubeconfig.yaml
+
+# Export KUBECONFIG for current session
+export KUBECONFIG=/home/ec2-user/kubeconfig.yaml
+
+# Add to .bashrc for future sessions
+echo 'export KUBECONFIG=~/kubeconfig.yaml' >> /home/ec2-user/.bashrc
+
+# Verify K3s service
+echo "Checking K3s service status..."
 sudo systemctl status k3s | grep Active
 
-echo "🔍 Getting node status..."
-sudo k3s kubectl get nodes
+# Wait a few seconds before running kubectl
+sleep 5
 
-echo "📁 Saving kubeconfig to current user path: ~/k3s.yaml"
-sudo cp /etc/rancher/k3s/k3s.yaml $HOME/k3s.yaml
-sudo chown $(id -u):$(id -g) $HOME/k3s.yaml
-echo "export KUBECONFIG=$HOME/k3s.yaml" >> ~/.bashrc
-export KUBECONFIG=$HOME/k3s.yaml
+# Check cluster info
+echo "Kubernetes Cluster Info:"
+/usr/local/bin/kubectl --kubeconfig=/home/ec2-user/kubeconfig.yaml cluster-info
 
-echo "🧪 Verifying connection..."
-kubectl get nodes
-
-echo "✅ K3s setup completed successfully!"
+# List nodes
+echo "Listing Cluster Nodes:"
+/usr/local/bin/kubectl --kubeconfig=/home/ec2-user/kubeconfig.yaml get nodes
