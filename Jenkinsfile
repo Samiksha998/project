@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = credentials('samikshav') // Jenkins credentials ID
-        DOCKER_PASSWORD = credentials('Samiksha@1998')
-        KUBECONFIG = "/home/ec2-user/.kube/config"
+        DOCKER_USERNAME = credentials('samikshav')            // Jenkins secret text or username-password ID
+        DOCKER_PASSWORD = credentials('Samiksha@1998')        // Jenkins secret text or username-password ID
+        KUBECONFIG = "/home/ec2-user/.kube/config"            // Path to Kubeconfig for kubectl
         FRONTEND_IMAGE = "samikshav/full-stack-app-frontend:latest"
-        BACKEND_IMAGE = "samikshav/full-stack-app-backend:latest"
+        BACKEND_IMAGE  = "samikshav/full-stack-app-backend:latest"
     }
 
     stages {
@@ -22,15 +22,15 @@ pipeline {
                     sh '''
                     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-                    cd frontend
+                    cd docker/frontend
                     docker build -t $FRONTEND_IMAGE .
                     docker push $FRONTEND_IMAGE
-                    cd ..
+                    cd ../..
 
-                    cd backend
+                    cd docker/backend
                     docker build -t $BACKEND_IMAGE .
                     docker push $BACKEND_IMAGE
-                    cd ..
+                    cd ../..
                     '''
                 }
             }
@@ -64,7 +64,7 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline completed."
+            echo "✅ Pipeline completed."
         }
     }
 }
