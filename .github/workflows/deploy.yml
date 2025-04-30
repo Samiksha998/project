@@ -61,7 +61,7 @@ jobs:
 
       - name: Deploy to Kubernetes on EC2 (K3s)
         run: |
-          sudo yum install git -y 
+          sudo dnf install git -y 
           git clone https://github.com/Samiksha998/project.git
           cd project
           sudo k3s kubectl get nodes
