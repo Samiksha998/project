@@ -7,8 +7,8 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  FRONTEND_IMAGE: yourdockerhub/frontend:latest
-  BACKEND_IMAGE: yourdockerhub/backend:latest
+  FRONTEND_IMAGE: samikshav/full-stack-app-frontend:latest
+  BACKEND_IMAGE: samikshav/full-stack-app-backend:latest
   KUBECONFIG_FILE: kubeconfig.yaml
 
 jobs:
