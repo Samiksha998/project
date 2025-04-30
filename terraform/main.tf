@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "k8s_instance" {
-  ami           = "ami-0e449927258d45bc4" # Amazon Linux 2 AMI
+  ami           = "ami-0b86aaed8ef90e45f" # Amazon Linux 2 AMI
   instance_type = "t2.medium"
   key_name      = "key"
 
