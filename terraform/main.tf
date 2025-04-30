@@ -16,10 +16,11 @@ resource "aws_instance" "k8s_instance" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'Waiting for K3s installation to complete...'",
-      "sleep 30",
+      "echo 'Waiting for kubeconfig.yaml to be ready...'",
+      "retry=0; while [ ! -f /home/ec2-user/kubeconfig.yaml ]; do sleep 10; retry=$((retry+1)); if [ $retry -ge 12 ]; then echo 'Timeout waiting for kubeconfig'; exit 1; fi; done",
       "ls -l /home/ec2-user/kubeconfig.yaml"
     ]
+
 
     connection {
       type        = "ssh"
