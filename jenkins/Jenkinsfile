@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        FRONTEND_IMAGE = 'samikshav/fullstack-frontend'
-        BACKEND_IMAGE  = 'samikshav/fullstack-backend'
-        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
+        FRONTEND_IMAGE         = 'samikshav/fullstack-frontend:latest'
+        BACKEND_IMAGE          = 'samikshav/fullstack-backend:latest'
+        DOCKER_CREDENTIALS_ID  = 'dockerhub-creds' // Replace this with the actual ID of your Jenkins credentials (type: username/password)
     }
 
     stages {
@@ -16,10 +16,14 @@ pipeline {
 
         stage('Build and Push Docker Images') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: "${DOCKER_CREDENTIALS_ID}", 
+                    usernameVariable: 'DOCKER_USER', 
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
                     sh """
                     echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                    
+
                     cd docker/frontend
                     docker build -t $FRONTEND_IMAGE .
                     docker push $FRONTEND_IMAGE
@@ -31,11 +35,9 @@ pipeline {
             }
         }
 
-        stage('Deploy to K8s') {
+        stage('Deploy to Kubernetes') {
             steps {
-                sh """
-                kubectl apply -f k8s-manifests/
-                """
+                sh 'kubectl apply -f k8s-manifests/'
             }
         }
     }
