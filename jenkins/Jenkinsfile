@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        FRONTEND_IMAGE         = 'samikshav/fullstack-frontend:latest'
-        BACKEND_IMAGE          = 'samikshav/fullstack-backend:latest'
+        FRONTEND_IMAGE         = 'samikshav/full-stack-app-frontend:latest'
+        BACKEND_IMAGE          = 'samikshav/full-stack-app-backend:latest'
         DOCKER_CREDENTIALS_ID  = 'dockerhub-creds' // Replace this with the actual ID of your Jenkins credentials (type: username/password)
     }
 
