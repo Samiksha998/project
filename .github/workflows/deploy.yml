@@ -59,9 +59,8 @@ jobs:
           echo "${{ secrets.KUBECONFIG_CONTENT }}" > $KUBECONFIG_FILE
           export KUBECONFIG=$KUBECONFIG_FILE
 
-      - name: Deploy to Kubernetes on EC2 (K3s)
+      - name: Deploy to Kubernetes
         run: |
-          git clone https://github.com/Samiksha998/project.git
-          cd project
-          k3s kubectl get nodes
-          k3s kubectl apply -f ./k8s-manifests
+          mkdir ~/.kube
+          echo "${{ secrets.KUBECONFIG_FILE }}" > ~/.kube/config
+          kubectl apply -f ./k8s-manifests
