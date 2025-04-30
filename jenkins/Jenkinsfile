@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        FRONTEND_IMAGE = 'yourdockerhub/fullstack-frontend'
-        BACKEND_IMAGE  = 'yourdockerhub/fullstack-backend'
+        FRONTEND_IMAGE = 'samikshav/fullstack-frontend'
+        BACKEND_IMAGE  = 'samikshav/fullstack-backend'
         DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
     }
 
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/your-org/your-repo.git'
+                git 'https://github.com/Samiksha998/project.git'
             }
         }
 
