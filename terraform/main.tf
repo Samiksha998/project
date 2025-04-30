@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_instance" "k8s_instance" {
   ami           = "ami-0e449927258d45bc4" # Amazon Linux 2 AMI
-  instance_type = "t2.xlarge"
+  instance_type = "t2.medium"
   key_name      = "key"
 
   user_data = file("scripts/install-k8s.sh")
