@@ -34,30 +34,7 @@ pipeline {
             }
         }
 
-        stage('Terraform Apply') {
-            steps {
-                script {
-                    sh '''
-                    cd terraform
-                    terraform init
-                    terraform apply -auto-approve
-                    '''
-                }
-            }
-        }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    sh '''
-                    kubectl apply -f k8s/frontend-deployment.yaml
-                    kubectl apply -f k8s/frontend-service.yaml
-                    kubectl apply -f k8s/backend-deployment.yaml
-                    kubectl apply -f k8s/backend-service.yaml
-                    '''
-                }
-            }
-        }
     }
 
     post {
