@@ -7,17 +7,32 @@ resource "aws_instance" "k8s_instance" {
   instance_type = "t2.medium"
   key_name      = "key"
 
+  # Use this to ensure K3s is installed and kubeconfig is generated
   user_data = file("scripts/install-k8s.sh")
 
   tags = {
     Name = "k8s-instance"
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Waiting for K3s installation to complete...'",
+      "sleep 30",
+      "ls -l /home/ec2-user/kubeconfig.yaml"
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("key.pem")
+      host        = self.public_ip
+    }
+  }
 }
 
-# Associate an existing Elastic IP
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.k8s_instance.id
-  allocation_id = "eipalloc-030bfd53db39d9735"  # <-- Replace this with your actual Allocation ID
+  allocation_id = "eipalloc-030bfd53db39d9735" # Replace with your actual Allocation ID
 }
 
 output "instance_public_ip" {
