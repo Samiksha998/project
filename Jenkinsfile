@@ -26,8 +26,8 @@ pipeline {
                     cd ../..
 
                     cd docker/backend
-                    echo 'samiksha' | sudo -S docker build -t $BACKEND_IMAGE .
-                    echo 'samiksha' | sudo -S docker push $BACKEND_IMAGE
+                    echo 'admin' | sudo -S docker build -t $BACKEND_IMAGE .
+                    echo 'admin' | sudo -S docker push $BACKEND_IMAGE
                     cd ../..
                     '''
                 }
