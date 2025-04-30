@@ -2,17 +2,17 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = credentials('dockerhub-username') // Jenkins credentials ID
-        DOCKER_PASSWORD = credentials('dockerhub-password')
+        DOCKER_USERNAME = credentials('samikshav') // Jenkins credentials ID
+        DOCKER_PASSWORD = credentials('Samikha@1998')
         KUBECONFIG = "/home/ec2-user/.kube/config"
-        FRONTEND_IMAGE = "yourdockerhubusername/frontend-app:latest"
-        BACKEND_IMAGE = "yourdockerhubusername/backend-app:latest"
+        FRONTEND_IMAGE = "samikshav/full-stack-app-frontend:latest"
+        BACKEND_IMAGE = "samikshav/full-stack-app-backend"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/YOUR_GITHUB_REPO_URL.git', branch: 'main'
+                git url: 'https://github.com/Samiksha998/project.git', branch: 'main'
             }
         }
 
