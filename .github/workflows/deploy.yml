@@ -54,13 +54,16 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Set up kubectl
+      - name: Copy kubeconfig from EC2
         run: |
-          echo "${{ secrets.KUBECONFIG_CONTENT }}" > $KUBECONFIG_FILE
-          export KUBECONFIG=$KUBECONFIG_FILE
+          echo "${{ secrets.EC2_KEY }}" > ec2-key.pem
+          chmod 400 ec2-key.pem
+          scp -o StrictHostKeyChecking=no -i ec2-key.pem ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/kubeconfig.yaml kubeconfig.yaml
 
       - name: Deploy to Kubernetes
         run: |
-          mkdir ~/.kube
-          echo "${{ secrets.KUBECONFIG_FILE }}" > ~/.kube/config
+          mkdir -p ~/.kube
+          cp kubeconfig.yaml ~/.kube/config
+          export KUBECONFIG=~/.kube/config
+          kubectl get nodes
           kubectl apply -f ./k8s-manifests
