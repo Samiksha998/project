@@ -1,28 +1,25 @@
-# Use the official Golang image (version 1.19)
-FROM golang:1.19
+# Stage 1: Build the Go binary
+FROM golang:1.19 AS builder
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy go.mod and go.sum files first for caching dependencies
 COPY go.mod go.sum ./
-
-# Download dependencies
 RUN go mod download
 
-# Copy the entire backend code
 COPY . .
 
-# Expose backend server port
+RUN go build -o backend main.go
+
+# Stage 2: Run the binary
+FROM debian:bullseye-slim
+
+WORKDIR /app
+
+COPY --from=builder /app/backend /app/backend
+
+# Fiber requires timezone data
+RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
+
 EXPOSE 8080
 
-# Set environment variables (optional here - actual values passed during docker run)
-# ENV DB_HOST=...
-# ENV DB_USER=...
-# ENV DB_PASSWORD=...
-# ENV DB_NAME=...
-# ENV DB_PORT=...
-# ENV ALLOWED_ORIGINS=...
-
-# Command to build and run the server
-CMD ["sh", "-c", "go get ./... && go run main.go"]
+CMD ["./backend"]
