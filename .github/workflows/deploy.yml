@@ -38,14 +38,30 @@ jobs:
           docker build -t $BACKEND_IMAGE ./docker/backend
           docker push $BACKEND_IMAGE
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init & Apply
+        working-directory: ./terraform
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
       - name: Setup SSH Key
         run: |
           echo "${{ secrets.EC2_KEY }}" > key.pem
           chmod 600 key.pem
 
+      - name: Install K3s on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            curl -sfL https://get.k3s.io | sh -
+            sudo cp /etc/rancher/k3s/k3s.yaml /home/ec2-user/k3s.yaml
+            sudo chown ec2-user:ec2-user /home/ec2-user/k3s.yaml
+          EOF
+
       - name: Copy kubeconfig from EC2
         run: |
-          scp -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/etc/rancher/k3s/k3s.yaml $KUBECONFIG || \
           scp -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/k3s.yaml $KUBECONFIG
           sed -i "s/127.0.0.1/${{ secrets.EC2_PUBLIC_IP }}/g" $KUBECONFIG
 
