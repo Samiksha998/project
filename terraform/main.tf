@@ -3,19 +3,24 @@ resource "aws_instance" "k8s_instance" {
   instance_type = "t2.medium"
   key_name      = "key" # Replace with your key name
 
-  user_data = <<-EOF
+user_data = <<-EOF
               #!/bin/bash
               set -e
-              curl -sfL https://get.k3s.io | sh -
-              # Disable SELinux enforcement (to avoid k3s-selinux dependency issues)
+
+              echo "Disabling SELinux (if enforced)..."
               setenforce 0 || true
-              # Install K3s without SELinux policies
+
+              echo "Installing K3s without SELinux dependencies..."
               curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_SELINUX_RPM=true sh -
-              # Copy kubeconfig to ec2-user home
+
+              echo "Copying kubeconfig..."
               cp /etc/rancher/k3s/k3s.yaml /home/ec2-user/kubeconfig.yaml
               chown ec2-user:ec2-user /home/ec2-user/kubeconfig.yaml
               chmod 644 /home/ec2-user/kubeconfig.yaml
-              EOF
+
+              echo "✅ K3s installation complete."
+EOF
+
 
   tags = {
     Name = "k8s-instance"
