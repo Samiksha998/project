@@ -19,7 +19,7 @@ resource "aws_instance" "k8s_instance" {
               git clone https://github.com/Samiksha998/project.git
               cd project
               kubectl --kubeconfig=../kubeconfig.yaml apply -f ./k8s-manifests
-              echo "✅ hosted app on server."
+              echo "✅ hosted app on k8s server."
               EOF
 
   tags = {
