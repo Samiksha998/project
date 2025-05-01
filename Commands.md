@@ -27,7 +27,7 @@ curl http://18.204.224.252:8080/employees
 ```
 // on docker
 ```
- sudo docker build -t samikshav/full-stack-app-frontend:latest .
+sudo docker build -t samikshav/full-stack-app-frontend:latest .
 sudo docker push samikshav/full-stack-app-frontend:latest 
 
 sudo docker build -t samikshav/full-stack-app-backend:latest .
