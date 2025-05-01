@@ -43,3 +43,39 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose version
 sudo docker-compose up --build
 ```
+// minikube 
+```
+# Update packages
+sudo yum update -y
+sudo yum install git -y
+git clone https://github.com/Samiksha998/project.git
+cd project 
+
+sudo yum install docker -y
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+docker --version
+
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm
+sudo rpm -Uvh minikube-latest.x86_64.rpm
+
+sudo usermod -aG docker $USER && newgrp docker
+sudo usermod -aG docker ec2-user
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"   
+echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+chmod +x kubectl
+mkdir -p ~/.local/bin
+mv ./kubectl ~/.local/bin/kubectl
+# and then append (or prepend) ~/.local/bin to $PATH
+
+kubectl version --client
+
+minikube start 
+
+```
