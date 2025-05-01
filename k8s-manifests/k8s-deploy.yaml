@@ -33,3 +33,53 @@ spec:
     - port: 3000
       targetPort: 3000
       nodePort: 30036  # Access via <NodeIP>:30036
+---
+# backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: samikshav/full-stack-app-backend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: "postgres-service"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+            - name: DB_NAME
+              value: "employeedb"
+            - name: DB_PORT
+              value: "5432"
+            - name: ALLOWED_ORIGINS
+              value: "http://localhost:3000"  # Update for frontend if needed
+
+---
+# backend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080  # Access via <NodeIP>:30080
