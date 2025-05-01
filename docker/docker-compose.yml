@@ -27,4 +27,27 @@ services:
     environment:
       DB_HOST: postgres
       DB_USER: postgres
-      DB
+      DB_PASSWORD: admin123
+      DB_NAME: employeedb
+      DB_PORT: 5432
+      ALLOWED_ORIGINS: http://localhost:3000
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: employee-frontend
+    restart: always
+    environment:
+      REACT_APP_SERVER_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
