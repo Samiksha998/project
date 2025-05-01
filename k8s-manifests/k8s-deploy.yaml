@@ -1,40 +1,66 @@
-# frontend-service.yaml
+# ---------------------- PostgreSQL Persistent Volume Claim ----------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# ---------------------- PostgreSQL Deployment ----------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: postgres
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: react-app
+      app: postgres
   template:
     metadata:
       labels:
-        app: frontend
+        app: postgres
     spec:
       containers:
-        - name: frontend
-          image: samikshav/full-stack-app-frontend:latest
+        - name: postgres
+          image: postgres:13
           ports:
-            - containerPort: 3000
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "employeedb"
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
 
 ---
-# frontend-service.yaml
+# ---------------------- PostgreSQL Service ----------------------
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: postgres-service
 spec:
   selector:
-    app: react-app
-  type: NodePort
+    app: postgres
   ports:
-    - port: 3000
-      targetPort: 3000
-      nodePort: 30036  # Access via <NodeIP>:30036
+    - port: 5432
+      targetPort: 5432
+
 ---
-# backend-deployment.yaml
+# ---------------------- Backend Deployment ----------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -66,10 +92,10 @@ spec:
             - name: DB_PORT
               value: "5432"
             - name: ALLOWED_ORIGINS
-              value: "http://localhost:3000"  # Update for frontend if needed
+              value: "http://localhost:3000"
 
 ---
-# backend-service.yaml
+# ---------------------- Backend Service ----------------------
 apiVersion: v1
 kind: Service
 metadata:
@@ -79,7 +105,43 @@ spec:
     app: backend
   type: NodePort
   ports:
-    - protocol: TCP
-      port: 8080
+    - port: 8080
       targetPort: 8080
-      nodePort: 30080  # Access via <NodeIP>:30080
+      nodePort: 30080
+
+---
+# ---------------------- Frontend Deployment ----------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: samikshav/full-stack-app-frontend:latest
+          ports:
+            - containerPort: 3000
+
+---
+# ---------------------- Frontend Service ----------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30036
