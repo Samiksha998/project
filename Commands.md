@@ -81,3 +81,28 @@ kubectl apply -f kubectl apply -f k8s-deploy.yaml
 minikube addons enable metrics-server
 
 ```
+// Optional-Troubleshooting 
+```
+curl http://54.242.238.216:30036
+curl http://54.242.238.216:30080
+
+
+sudo iptables -L -n
+sudo ufw status
+sudo ufw allow 30036
+sudo ufw allow 30080
+kubectl get nodes -o wide
+kubectl get svc frontend-service backend-service -o wide
+
+sudo nano /etc/systemd/system/k3s.service
+--node-external-ip=<http://54.242.238.216/
+ExecStart=/usr/local/bin/k3s server --node-external-ip=54.242.238.216
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl restart k3s
+
+sudo minikube tunnel
+kubectl get svc frontend-service backend-service
+kubectl port-forward svc/frontend-service 3000:3000
+kubectl port-forward svc/backend-service 8080:8080
+```
