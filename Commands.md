@@ -41,4 +41,5 @@ sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-c
 sudo chmod +x /usr/local/bin/docker-compose
 
 docker-compose version
+sudo docker-compose up --build
 ```
