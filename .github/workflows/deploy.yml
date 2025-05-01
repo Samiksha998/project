@@ -72,7 +72,7 @@ jobs:
 
       - name: 🚢 Deploy to Kubernetes
         run: |
-          sudo dnf install -y git
+          sudo apt-get install -y git
           git clone https://github.com/Samiksha998/project.git
           cd project
           kubectl --kubeconfig=../kubeconfig.yaml apply -f ./k8smanifests
