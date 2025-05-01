@@ -15,10 +15,18 @@ FROM debian:bullseye-slim
 
 WORKDIR /app
 
+# Fiber needs timezone data
+RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
+
 COPY --from=builder /app/backend /app/backend
 
-# Fiber requires timezone data
-RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
+# Add environment variable definitions (optional for clarity/documentation)
+ENV DB_HOST=localhost \
+    DB_USER=postgres \
+    DB_PASSWORD=postgres \
+    DB_NAME=employeedb \
+    DB_PORT=5432 \
+    ALLOWED_ORIGINS=http://localhost:3000
 
 EXPOSE 8080
 
