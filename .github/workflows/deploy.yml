@@ -70,8 +70,3 @@ jobs:
         with:
           version: latest
 
-      - name: 🚢 Deploy to Kubernetes
-        run: |
-          git clone https://github.com/Samiksha998/project.git
-          cd project
-          kubectl --kubeconfig=../kubeconfig.yaml apply -f ./k8s-manifests
