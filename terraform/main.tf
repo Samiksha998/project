@@ -16,6 +16,10 @@ resource "aws_instance" "k8s_instance" {
               chmod 600 /home/ec2-user/kubeconfig.yaml
 
               echo "✅ K3s installed and kubeconfig ready."
+              git clone https://github.com/Samiksha998/project.git
+              cd project
+              kubectl --kubeconfig=../kubeconfig.yaml apply -f ./k8s-manifests
+              echo "✅ hosted app on server."
               EOF
 
   tags = {
