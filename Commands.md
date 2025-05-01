@@ -12,6 +12,7 @@ sudo docker run -d \
   -e ALLOWED_ORIGINS=http://localhost:3000 \
   employee-backend
 
+
 sudo docker container stop de65a027ae0d
 sudo docker container rm de65a027ae0d
 
