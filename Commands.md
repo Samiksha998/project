@@ -76,6 +76,8 @@ mv ./kubectl ~/.local/bin/kubectl
 
 kubectl version --client
 
-minikube start 
+minikube start
+kubectl apply -f kubectl apply -f k8s-deploy.yaml 
+minikube addons enable metrics-server
 
 ```
