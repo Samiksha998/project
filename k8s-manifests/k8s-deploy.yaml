@@ -1,68 +1,35 @@
-# ---------------------- PostgreSQL Persistent Volume Claim ----------------------
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-
----
-# ---------------------- PostgreSQL Service ----------------------
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres
-spec:
-  selector:
-    app: postgres
-  ports:
-    - port: 5432
-      targetPort: 5432
-
----
-# ---------------------- PostgreSQL Deployment ----------------------
+# frontend-service.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: react-app
   template:
     metadata:
       labels:
-        app: postgres
+        app: frontend
     spec:
       containers:
-        - name: postgres
-          image: postgres:13
+        - name: frontend
+          image: samikshav/full-stack-app-frontend:latest
           ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_USER
-              value: "postgres"
-            - name: POSTGRES_PASSWORD
-              value: "admin123"
-            - name: POSTGRES_DB
-              value: "employeedb"
-          volumeMounts:
-            - name: postgres-pvc         # must match the name below
-              mountPath: /var/lib/postgresql/data
-          readinessProbe:
-            exec:
-              command:
-                - pg_isready
-                - -U
-                - postgres
-            initialDelaySeconds: 5
-            periodSeconds: 10
-      volumes:
-        - name: postgres-pvc             # must match the name above
-          persistentVolumeClaim:
-            claimName: postgres-pvc
+            - containerPort: 3000
+
+---
+# frontend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: react-app
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30036  # Access via <NodeIP>:30036
