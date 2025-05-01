@@ -30,12 +30,12 @@ jobs:
 
       - name: Build & Push Frontend Image
         run: |
-          docker build -t $FRONTEND_IMAGE ./frontend
+          docker build -t $FRONTEND_IMAGE ./docker/frontend
           docker push $FRONTEND_IMAGE
 
       - name: Build & Push Backend Image
         run: |
-          docker build -t $BACKEND_IMAGE ./backend
+          docker build -t $BACKEND_IMAGE ./docker/backend
           docker push $BACKEND_IMAGE
 
       - name: Setup SSH Key
