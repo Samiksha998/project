@@ -1,20 +1,17 @@
-# Use official Node.js 14.17.0 base image
-FROM node:14.17.0
+# Step 1: Build the React app
+FROM node:14 as build
 
-# Set working directory inside container
 WORKDIR /app
-
-# Copy package.json and package-lock.json first
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
 COPY . .
+RUN npm install
+RUN npm run build
 
-# Expose port 3000
+# Step 2: Serve it with a lightweight web server
+FROM node:14
+RUN npm install -g serve
+
+WORKDIR /app
+COPY --from=build /app/build ./build
+
 EXPOSE 3000
-
-# Start the frontend server
-CMD ["npm", "start"]
+CMD ["serve", "-s", "build", "-l", "3000"]
