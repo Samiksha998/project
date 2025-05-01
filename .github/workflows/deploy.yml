@@ -74,5 +74,4 @@ jobs:
         run: |
           git clone https://github.com/Samiksha998/project.git
           cd project
-          ls -R
-          kubectl --kubeconfig=../kubeconfig.yaml apply -f ./k8smanifests
+          kubectl --kubeconfig=../kubeconfig.yaml apply -f ./k8s-manifests
