@@ -58,6 +58,7 @@ spec:
   ports:
     - port: 5432
       targetPort: 5432
+  type: ClusterIP
 
 ---
 # ---------------------- Backend Deployment ----------------------
@@ -103,11 +104,10 @@ metadata:
 spec:
   selector:
     app: backend
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30080
 
 ---
 # ---------------------- Frontend Deployment ----------------------
@@ -140,8 +140,7 @@ metadata:
 spec:
   selector:
     app: frontend
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 30036
