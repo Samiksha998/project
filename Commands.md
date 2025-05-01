@@ -34,3 +34,11 @@ sudo docker push samikshav/full-stack-app-frontend:latest
 sudo docker build -t samikshav/full-stack-app-backend:latest .
 sudo docker push samikshav/full-stack-app-backend:latest 
 ```
+// docker compose 
+```
+sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+docker-compose version
+```
