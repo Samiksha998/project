@@ -20,6 +20,7 @@ resource "aws_instance" "k8s_instance" {
               cd project
               kubectl --kubeconfig=../kubeconfig.yaml apply -f ./k8s-manifests
               echo "✅ hosted app on k8s server."
+
               EOF
 
   tags = {
@@ -34,6 +35,11 @@ resource "aws_instance" "k8s_instance" {
       "done",
       "[ -f /home/ec2-user/kubeconfig.yaml ] || (echo '❌ kubeconfig.yaml not found'; sudo cat /var/log/cloud-init-output.log; exit 1)",
       "echo '✅ kubeconfig.yaml is present.'"
+
+       "git clone https://github.com/Samiksha998/project.git",
+       "cd project",
+       "kubectl --kubeconfig=../kubeconfig.yaml apply -f ./k8s-manifests",
+       "echo "✅ hosted app on k8s server."
     ]
 
     connection {
